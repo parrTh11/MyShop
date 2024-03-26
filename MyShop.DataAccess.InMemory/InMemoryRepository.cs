@@ -59,7 +59,7 @@ namespace MyShop.DataAccess.InMemory
             }
             else
             {
-                throw new Exception(className + " Not Found");
+                throw new Exception(className + "Not Found");
             }
         }
 
