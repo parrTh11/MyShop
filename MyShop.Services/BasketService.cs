@@ -15,7 +15,6 @@ namespace MyShop.Services
         IRepository<BasketItem> basketItemContext;
         IRepository<WishList> wishListContext;
 
-
         public const string BasketSessionName = "eCommerceBasket";
 
         public BasketService(IRepository<Product> ProductContext, IRepository<Basket> BasketContext, IRepository<BasketItem> basketItemContext, IRepository<WishList> wishListContext)
