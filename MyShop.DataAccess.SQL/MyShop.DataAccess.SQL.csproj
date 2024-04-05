@@ -64,6 +64,38 @@
     <Compile Include="Migrations\202403281103565_AddCustomer.designer.cs">
       <DependentUpon>202403281103565_AddCustomer.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202403281305222_AddedOrders.cs" />
+    <Compile Include="Migrations\202403281305222_AddedOrders.designer.cs">
+      <DependentUpon>202403281305222_AddedOrders.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202403290551493_Updated.cs" />
+    <Compile Include="Migrations\202403290551493_Updated.designer.cs">
+      <DependentUpon>202403290551493_Updated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202403290911450_Updated_Order.cs" />
+    <Compile Include="Migrations\202403290911450_Updated_Order.designer.cs">
+      <DependentUpon>202403290911450_Updated_Order.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404031127236_Updated_SureName.cs" />
+    <Compile Include="Migrations\202404031127236_Updated_SureName.designer.cs">
+      <DependentUpon>202404031127236_Updated_SureName.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404040721477_wishListUpdated.cs" />
+    <Compile Include="Migrations\202404040721477_wishListUpdated.designer.cs">
+      <DependentUpon>202404040721477_wishListUpdated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404040832246_UpdatedWishList.cs" />
+    <Compile Include="Migrations\202404040832246_UpdatedWishList.designer.cs">
+      <DependentUpon>202404040832246_UpdatedWishList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404040931187_UpadatedWishList.cs" />
+    <Compile Include="Migrations\202404040931187_UpadatedWishList.designer.cs">
+      <DependentUpon>202404040931187_UpadatedWishList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404041213410_UpdatedWishList1.cs" />
+    <Compile Include="Migrations\202404041213410_UpdatedWishList1.designer.cs">
+      <DependentUpon>202404041213410_UpdatedWishList1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLRepository.cs" />
@@ -87,6 +119,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202403281103565_AddCustomer.resx">
       <DependentUpon>202403281103565_AddCustomer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202403281305222_AddedOrders.resx">
+      <DependentUpon>202403281305222_AddedOrders.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202403290551493_Updated.resx">
+      <DependentUpon>202403290551493_Updated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202403290911450_Updated_Order.resx">
+      <DependentUpon>202403290911450_Updated_Order.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404031127236_Updated_SureName.resx">
+      <DependentUpon>202404031127236_Updated_SureName.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404040721477_wishListUpdated.resx">
+      <DependentUpon>202404040721477_wishListUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404040832246_UpdatedWishList.resx">
+      <DependentUpon>202404040832246_UpdatedWishList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404040931187_UpadatedWishList.resx">
+      <DependentUpon>202404040931187_UpadatedWishList.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404041213410_UpdatedWishList1.resx">
+      <DependentUpon>202404041213410_UpdatedWishList1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

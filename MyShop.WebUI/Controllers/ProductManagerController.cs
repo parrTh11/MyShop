@@ -1,13 +1,11 @@
-﻿using System;
+﻿using MyShop.Core;
+using MyShop.Core.Models;
+using MyShop.Core.ViewModels;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using MyShop.Core;
-using MyShop.Core.Models;
-using MyShop.Core.ViewModels;
-using MyShop.DataAccess.InMemory;
 
 namespace MyShop.WebUI.Controllers
 {
@@ -30,8 +28,8 @@ namespace MyShop.WebUI.Controllers
 
         public ActionResult Create()
         {
-            ProductManagerViewModel viewModel = new ProductManagerViewModel();
-            viewModel.Product= new Product();
+            ProductViewModel viewModel = new ProductViewModel();
+
             viewModel.ProductCategories = productCategories.Collection();
             return View(viewModel);
         }
@@ -39,19 +37,34 @@ namespace MyShop.WebUI.Controllers
         [HttpPost]
         public ActionResult Create(Product product, HttpPostedFileBase file)
         {
+            //if(file == null)
+            //{
+            //    ModelState.AddModelError("Image","Select the Image");
+            //}
             if (!ModelState.IsValid)
             {
-                return View(product);
+                ProductViewModel viewModel = new ProductViewModel();
+                viewModel.Id = product.Id;
+                viewModel.Name = product.Name;
+                viewModel.Price = product.Price;
+                viewModel.Description = product.Description;
+                viewModel.Category = product.Category;
+                viewModel.Image = product.Image;
+
+
+                viewModel.ProductCategories = productCategories.Collection();
+
+                return View(viewModel);
+
+                //return View(product);
             }
             else
             {
-
                 if(file!= null)
                 {
                     product.Image = product.Id + Path.GetExtension(file.FileName);
                     file.SaveAs(Server.MapPath("//Content//ProductImages//") + product.Image);
                 }
-
                 context.Insert(product);
                 context.Commit();
 
@@ -69,8 +82,15 @@ namespace MyShop.WebUI.Controllers
             }
             else
             {
-                ProductManagerViewModel viewModel = new ProductManagerViewModel();
-                viewModel.Product = product;
+                ProductViewModel viewModel = new ProductViewModel();
+                viewModel.Id = product.Id;
+                viewModel.Name = product.Name;
+                viewModel.Price = product.Price;
+                viewModel.Description = product.Description;
+                viewModel.Category = product.Category;
+                viewModel.Image = product.Image;
+
+
                 viewModel.ProductCategories = productCategories.Collection();
 
                 return View(viewModel);
@@ -101,9 +121,10 @@ namespace MyShop.WebUI.Controllers
                 }
 
                 productToEdit.Category = product.Category;
-                productToEdit.Discription = product.Discription;
+                productToEdit.Description = product.Description;
                 productToEdit.Name = product.Name;
                 productToEdit.Price = product.Price;
+
 
                 context.Commit();
 

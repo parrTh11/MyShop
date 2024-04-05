@@ -16,3 +16,4 @@ namespace MyShop.Core.Models
     }
 }
 
+    

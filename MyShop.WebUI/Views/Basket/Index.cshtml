@@ -4,23 +4,26 @@
     ViewBag.Title = "Basket";
 }
 
-<h2>Basket</h2>
+<h4>Basket</h4>
 
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.ProductName)
+            Product Images
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Quantity)
+            @Html.DisplayNameFor(model => model.ProductName)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Price)
         </th>
         <th>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </th>
+        <th>
             Line Total
         </th>
-        <th></th>
+
     </tr>
 
 @foreach (var item in Model) {
@@ -30,12 +33,22 @@
         @Html.DisplayFor(modelItem => item.ProductName)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.Quantity)
-    </td>
-
-    <td>
         @String.Format("{0:c}", item.Price)
     </td>
+    <td>
+        <span>
+            <a style="color:red;" href="@Url.Action("AddOrRemoveProductToBasket", "Basket", new { basketItemId = item.Id, isAdded = false})">
+                <span class="glyphicon glyphicon-minus-sign"></span>
+            </a>
+        </span>
+        @Html.DisplayFor(modelItem => item.Quantity)
+        <span>
+            <a style="color:limegreen;" href="@Url.Action("AddOrRemoveProductToBasket", "Basket", new { basketItemId = item.Id, isAdded = true})">
+                <span class="glyphicon glyphicon-plus-sign"></span>
+            </a>
+        </span>
+    </td>
+
     <td>
         @String.Format("{0:c}", item.Price * item.Quantity)
     </td>
@@ -47,6 +60,6 @@
     <tr>
         <td colspan="4" style="text-align : right"><strong>Basket Total</strong></td>
         <td>@String.Format("{0:c}", (from p in Model select p.Price * p.Quantity).Sum())</td>
+        <td><a href="@Url.Action("Checkout", "Basket")">Checkout</a></td>
     </tr>
-
 </table>

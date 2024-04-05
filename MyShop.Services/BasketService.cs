@@ -4,8 +4,6 @@ using MyShop.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace MyShop.Services
@@ -14,14 +12,18 @@ namespace MyShop.Services
     {
         IRepository<Product> productContext;
         IRepository<Basket> basketContext;
+        IRepository<BasketItem> basketItemContext;
+        IRepository<WishList> wishListContext;
 
 
         public const string BasketSessionName = "eCommerceBasket";
 
-        public BasketService(IRepository<Product> ProductContext, IRepository<Basket> BasketContext)
+        public BasketService(IRepository<Product> ProductContext, IRepository<Basket> BasketContext, IRepository<BasketItem> basketItemContext, IRepository<WishList> wishListContext)
         {
             this.productContext = ProductContext;
             this.basketContext = BasketContext;
+            this.basketItemContext = basketItemContext;
+            this.wishListContext = wishListContext;
         }
 
         private Basket GetBasket(HttpContextBase httpContext, bool createIfNull)
@@ -157,6 +159,98 @@ namespace MyShop.Services
             }
         }
 
+        public List<ProductViewModel> AddToWishList(Product product)
+        {
+            WishList wishList = new WishList();
+            var productToAdd = wishListContext.Collection().FirstOrDefault(x => x.ProductId == product.Id);
+            if(productToAdd == null)
+            {
+                wishList.ProductId = product.Id;
+                wishList.ProductName = product.Name;
+            }
+            wishListContext.Insert(wishList);
+            wishListContext.Commit();
 
+            var listOfProductId = wishListContext.Collection().Select(x => x.ProductId);
+
+            List<ProductViewModel> listOfProductViewModel = new List<ProductViewModel>();
+            foreach (var productId in listOfProductId)
+            {
+                var productFromDb = productContext.Find(productId);
+                if(productFromDb != null)
+                {
+                    ProductViewModel viewModel = new ProductViewModel();
+                    viewModel.Image = productFromDb.Image ?? "";
+                    viewModel.Name = productFromDb.Name;
+                    viewModel.Category = productFromDb.Category;
+                    viewModel.Description = productFromDb.Description;
+                    viewModel.Price = productFromDb.Price;
+                    viewModel.Id = productFromDb.Id;
+                    listOfProductViewModel.Add(viewModel);
+                }
+            }
+                return listOfProductViewModel;
+        }
+
+        public void RemoveFromWishList(string Id)
+        {
+            WishList itemToDelete = wishListContext.Collection().FirstOrDefault(x => x.Id == Id);
+            if(itemToDelete != null)
+            {
+                wishListContext.Delete(Id);
+                wishListContext.Commit();
+            }
+        }
+
+        //public void AddToBasketPlus(string basketItemId)
+        //{
+        //    BasketItem basketItem = basketItemContext.Find(basketItemId);
+
+        //    basketItem.Quantity += 1;
+
+        //    basketItemContext.Commit();
+        //}
+
+        //public void AddToBasketMinus(string basketItemId)
+        //{
+        //    BasketItem basketItem = basketItemContext.Find(basketItemId);
+
+        //    if(basketItem.Quantity == 1)
+        //    {
+        //        basketItemContext.Delete(basketItemId);
+        //    }
+        //    basketItem.Quantity -= 1;
+
+        //    basketItemContext.Commit();
+        //}
+
+        public void AddToBasketPlusOrMinus(string basketItemId, bool isAdded)
+        {
+            BasketItem basketItem = basketItemContext.Find(basketItemId);
+
+            if (isAdded)
+            {
+                basketItem.Quantity += 1;
+            }
+            else
+            {
+                if (basketItem.Quantity == 1)
+                {
+                    basketItemContext.Delete(basketItemId);
+                }
+                else
+                {
+                    basketItem.Quantity -= 1;
+                }
+            }
+            basketItemContext.Commit();
+        }
+
+        public void ClearBasket(HttpContextBase httpContext)
+        {
+            Basket basket = GetBasket(httpContext, false);
+            basket.BasketItems.Clear();
+            basketContext.Commit();
+        }
     }
 }

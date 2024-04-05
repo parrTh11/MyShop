@@ -3,7 +3,7 @@
     ViewBag.Title = "Home Page";
 }
 
-<p>Products</p>
+<p>Products Available</p>
 
 <div class="col-md-2">
     <h4>Filter by Category</h4>
@@ -29,14 +29,20 @@
                 <strong>@Html.ActionLink(item.Name, "Details", new { id = item.Id })</strong>
             </div>
             <div class="col-md-12">
-                <p>@item.Discription</p>
+                <p>@item.Description</p>
             </div>
             <div class="col-md-12">
                 <h4>@item.Price</h4>
             </div>
             <div class="col-md-12">
                 <a href="@Url.Action("AddToBasket", "Basket", new { Id = item.Id})" class="btn btn-default">Add to basket</a>
+                <span>
+                    <a href="@Url.Action("AddToWishList","Basket", new { Id = item.Id, CreatedAt = item.CreatedAt, Name = item.Name, Price = item.Price, Category = item.Category, Description = item.Description, Image = item.Image})">
+                        <span class="glyphicon glyphicon-heart"></span>
+                    </a>
+                </span>
             </div>
+
         </div>
     }
 </div>
