@@ -7,13 +7,14 @@ namespace MyShop.Services
 {
     public interface IBasketService
     {
-        void AddToBasket(HttpContextBase httpContext, string productId);
-        void RemoveFromBasket(HttpContextBase httpContext, string itemId);
-        BasketSummaryViewModel GetBasketSummary(HttpContextBase httpcontext);
-        List<BasketItemViewModel> GetBasketItems(HttpContextBase httpContext);
+        void AddToBasket(HttpContextBase httpContext, string productId, string userEmail);
+        void RemoveFromBasket(HttpContextBase httpContext, string itemId, string userEmail);
+        BasketSummaryViewModel GetBasketSummary(HttpContextBase httpcontext, string userEmail);
+        List<BasketItemViewModel> GetBasketItems(HttpContextBase httpContext, string userEmail);
         void AddToBasketPlusOrMinus(string basketItemId, bool isAdded);
-        void ClearBasket(HttpContextBase httpContext);
-        List<ProductViewModel> AddToWishList(Product product);
+        void ClearBasket(HttpContextBase httpContext, string userEmail);
+        void AddToWishList(Product product);
         void RemoveFromWishList(string Id);
+        List<ProductViewModel> GetWishList();
     }
 }

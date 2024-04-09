@@ -1,4 +1,5 @@
 ﻿using MyShop.Core;
+using MyShop.Core.Contracts;
 using MyShop.Core.Models;
 using MyShop.Core.ViewModels;
 using System;
@@ -14,18 +15,20 @@ namespace MyShop.Services
         IRepository<Basket> basketContext;
         IRepository<BasketItem> basketItemContext;
         IRepository<WishList> wishListContext;
+        ICustomerService customerService;
 
         public const string BasketSessionName = "eCommerceBasket";
 
-        public BasketService(IRepository<Product> ProductContext, IRepository<Basket> BasketContext, IRepository<BasketItem> basketItemContext, IRepository<WishList> wishListContext)
+        public BasketService(IRepository<Product> ProductContext, IRepository<Basket> BasketContext, IRepository<BasketItem> basketItemContext, IRepository<WishList> wishListContext, ICustomerService customerService)
         {
             this.productContext = ProductContext;
             this.basketContext = BasketContext;
             this.basketItemContext = basketItemContext;
             this.wishListContext = wishListContext;
+            this.customerService = customerService;
         }
 
-        private Basket GetBasket(HttpContextBase httpContext, bool createIfNull)
+        private Basket GetBasket(HttpContextBase httpContext, bool createIfNull, string userId)
         {
             HttpCookie cookie = httpContext.Request.Cookies.Get(BasketSessionName);
 
@@ -42,7 +45,7 @@ namespace MyShop.Services
                 {
                     if (createIfNull)
                     {
-                        basket = CreateNewBasket(httpContext);
+                        basket = CreateNewBasket(httpContext, userId);
                     }
                 }
             }
@@ -50,14 +53,14 @@ namespace MyShop.Services
             {
                 if (createIfNull)
                 {
-                    basket = CreateNewBasket(httpContext);
+                    basket = CreateNewBasket(httpContext, userId);
                 }
             }
 
             return basket;
         }
 
-        private Basket CreateNewBasket(HttpContextBase httpContext)
+        private Basket CreateNewBasket(HttpContextBase httpContext, string userId)
         {
             Basket basket = new Basket();
 
@@ -72,9 +75,10 @@ namespace MyShop.Services
             return basket;
         }
 
-        public void AddToBasket(HttpContextBase httpContext, string productId)
+        public void AddToBasket(HttpContextBase httpContext, string productId, string userEmail)
         {
-            Basket basket = GetBasket(httpContext, true);
+            var userId = customerService.GetUserId(userEmail);
+            Basket basket = GetBasket(httpContext, true, userId);
             BasketItem item = basket.BasketItems.FirstOrDefault(i => i.ProductId == productId);
 
             if (item == null)
@@ -96,9 +100,10 @@ namespace MyShop.Services
             basketContext.Commit();
         }
 
-        public void RemoveFromBasket(HttpContextBase httpContext, string itemId)
+        public void RemoveFromBasket(HttpContextBase httpContext, string itemId, string userEmail)
         {
-            Basket basket = GetBasket(httpContext, true);
+            var userId = customerService.GetUserId(userEmail);
+            Basket basket = GetBasket(httpContext, true, userId);
             BasketItem item = basket.BasketItems.FirstOrDefault(i => i.Id == itemId);
 
             if (item != null)
@@ -108,9 +113,10 @@ namespace MyShop.Services
             }
         }
 
-        public List<BasketItemViewModel> GetBasketItems(HttpContextBase httpContext)
+        public List<BasketItemViewModel> GetBasketItems(HttpContextBase httpContext, string userEmail)
         {
-            Basket basket = GetBasket(httpContext, true);
+            var userId = customerService.GetUserId(userEmail);
+            Basket basket = GetBasket(httpContext, true, userId);
 
             if (basket != null)
             {
@@ -133,9 +139,10 @@ namespace MyShop.Services
             }
         }
 
-        public BasketSummaryViewModel GetBasketSummary(HttpContextBase httpcontext)
+        public BasketSummaryViewModel GetBasketSummary(HttpContextBase httpcontext, string userEmail)
         {
-            Basket basket = GetBasket(httpcontext, false);
+            var userId = customerService.GetUserId(userEmail);
+            Basket basket = GetBasket(httpcontext, false, userId);
             BasketSummaryViewModel model = new BasketSummaryViewModel(0, 0);
 
             if (basket != null)
@@ -158,25 +165,38 @@ namespace MyShop.Services
             }
         }
 
-        public List<ProductViewModel> AddToWishList(Product product)
+        public void AddToWishList(Product product)
         {
             WishList wishList = new WishList();
             var productToAdd = wishListContext.Collection().FirstOrDefault(x => x.ProductId == product.Id);
-            if(productToAdd == null)
+            if (productToAdd == null)
             {
                 wishList.ProductId = product.Id;
                 wishList.ProductName = product.Name;
+                wishListContext.Insert(wishList);
+                wishListContext.Commit();
             }
-            wishListContext.Insert(wishList);
-            wishListContext.Commit();
+        }
 
+        public void RemoveFromWishList(string Id)
+        {
+            WishList itemToDelete = wishListContext.Collection().FirstOrDefault(x => x.ProductId == Id);
+            if (itemToDelete != null)
+            {
+                wishListContext.Delete(itemToDelete.Id);
+                wishListContext.Commit();
+            }
+        }
+
+        public List<ProductViewModel> GetWishList()
+        {
             var listOfProductId = wishListContext.Collection().Select(x => x.ProductId);
 
             List<ProductViewModel> listOfProductViewModel = new List<ProductViewModel>();
             foreach (var productId in listOfProductId)
             {
                 var productFromDb = productContext.Find(productId);
-                if(productFromDb != null)
+                if (productFromDb != null)
                 {
                     ProductViewModel viewModel = new ProductViewModel();
                     viewModel.Image = productFromDb.Image ?? "";
@@ -188,17 +208,7 @@ namespace MyShop.Services
                     listOfProductViewModel.Add(viewModel);
                 }
             }
-                return listOfProductViewModel;
-        }
-
-        public void RemoveFromWishList(string Id)
-        {
-            WishList itemToDelete = wishListContext.Collection().FirstOrDefault(x => x.Id == Id);
-            if(itemToDelete != null)
-            {
-                wishListContext.Delete(Id);
-                wishListContext.Commit();
-            }
+            return listOfProductViewModel;
         }
 
         //public void AddToBasketPlus(string basketItemId)
@@ -245,9 +255,10 @@ namespace MyShop.Services
             basketItemContext.Commit();
         }
 
-        public void ClearBasket(HttpContextBase httpContext)
+        public void ClearBasket(HttpContextBase httpContext, string userEmail)
         {
-            Basket basket = GetBasket(httpContext, false);
+            var userId = customerService.GetUserId(userEmail);
+            Basket basket = GetBasket(httpContext, false, userId);
             basket.BasketItems.Clear();
             basketContext.Commit();
         }

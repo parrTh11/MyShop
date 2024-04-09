@@ -96,6 +96,22 @@
     <Compile Include="Migrations\202404041213410_UpdatedWishList1.designer.cs">
       <DependentUpon>202404041213410_UpdatedWishList1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202404080845520_Basket_Updated.cs" />
+    <Compile Include="Migrations\202404080845520_Basket_Updated.designer.cs">
+      <DependentUpon>202404080845520_Basket_Updated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404080937077_DbContext_Updated.cs" />
+    <Compile Include="Migrations\202404080937077_DbContext_Updated.designer.cs">
+      <DependentUpon>202404080937077_DbContext_Updated.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404080940112_WishList_Added.cs" />
+    <Compile Include="Migrations\202404080940112_WishList_Added.designer.cs">
+      <DependentUpon>202404080940112_WishList_Added.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202404081017570_Add_Wishlist.cs" />
+    <Compile Include="Migrations\202404081017570_Add_Wishlist.designer.cs">
+      <DependentUpon>202404081017570_Add_Wishlist.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLRepository.cs" />
@@ -143,6 +159,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202404041213410_UpdatedWishList1.resx">
       <DependentUpon>202404041213410_UpdatedWishList1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404080845520_Basket_Updated.resx">
+      <DependentUpon>202404080845520_Basket_Updated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404080937077_DbContext_Updated.resx">
+      <DependentUpon>202404080937077_DbContext_Updated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404080940112_WishList_Added.resx">
+      <DependentUpon>202404080940112_WishList_Added.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202404081017570_Add_Wishlist.resx">
+      <DependentUpon>202404081017570_Add_Wishlist.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

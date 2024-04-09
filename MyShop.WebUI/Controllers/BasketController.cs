@@ -12,36 +12,42 @@ namespace MyShop.WebUI.Controllers
     {
         IBasketService basketService;
         IOrderService orderService;
+        ICustomerService customerService;
         IRepository<Customer> customers;
 
-        public BasketController(IBasketService BasketService, IOrderService OrderService, IRepository<Customer> Customers)
+        public BasketController(IBasketService BasketService, IOrderService OrderService, IRepository<Customer> Customers, ICustomerService CustomerService)
         {
             this.basketService = BasketService;
             this.orderService = OrderService;
             this.customers = Customers;
+            this.customerService = CustomerService;
         }
 
         // GET: Basket
         public ActionResult Index()
         {
-            var model = basketService.GetBasketItems(this.HttpContext);
+            var userEmail = User.Identity.Name;
+            var model = basketService.GetBasketItems(this.HttpContext, userEmail);
             return View(model);
         }
 
         public ActionResult AddToBasket(string Id)
         {
-            basketService.AddToBasket(this.HttpContext, Id);
+            var userEmail = User.Identity.Name;
+            basketService.AddToBasket(this.HttpContext, Id, userEmail);
             return RedirectToAction("Index");
         }
 
         public ActionResult RemoveFromBasket(string Id)
         {
-            basketService.RemoveFromBasket(this.HttpContext, Id);
+            var userEmail = User.Identity.Name;
+            basketService.RemoveFromBasket(this.HttpContext, Id, userEmail);
             return RedirectToAction("Index");
         }
         public PartialViewResult BasketSummary()
         {
-            var basketSummary = basketService.GetBasketSummary(this.HttpContext);
+            var userEmail = User.Identity.Name;
+            var basketSummary = basketService.GetBasketSummary(this.HttpContext, userEmail);
 
             return PartialView(basketSummary);
         }
@@ -52,16 +58,22 @@ namespace MyShop.WebUI.Controllers
             return PartialView(searchBox);
         }
 
+        public ActionResult WishListIndex()
+        {
+            var wishList = basketService.GetWishList();
+            return View(wishList);
+        }
+
         public ActionResult AddToWishList(Product product)
         {
-            var wishList = basketService.AddToWishList(product);
-            return View(wishList);
+            basketService.AddToWishList(product);
+            return RedirectToAction("WishListIndex");
         }
 
         public ActionResult RemoveFromWishList(string Id)
         {
             basketService.RemoveFromWishList(Id);
-            return RedirectToAction("AddToWishList");
+            return RedirectToAction("WishListIndex");
         }
 
         public ActionResult AddOrRemoveProductToBasket(string basketItemId, bool isAdded)
@@ -101,21 +113,21 @@ namespace MyShop.WebUI.Controllers
             {
                 return RedirectToAction("Error");
             }
-            
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult Checkout(Order order)
         {
-            var basketItems = basketService.GetBasketItems(this.HttpContext);
+            var userEmail = User.Identity.Name;
+            var basketItems = basketService.GetBasketItems(this.HttpContext, userEmail);
             order.OrderStatus = "Order Created.";
             order.Email = User.Identity.Name;
             //process payment
 
             order.OrderStatus = "Payment Processed";
             orderService.CreateOrder(order, basketItems);
-            basketService.ClearBasket(this.HttpContext);
+            basketService.ClearBasket(this.HttpContext, userEmail);
 
             return RedirectToAction("Thankyou", new { OrderId = order.Id });
         }
